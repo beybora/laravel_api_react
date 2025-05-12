@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppContext } from '../Context/AppContext';
 
 const Home = () => {
-  return <h1 className="title">Latest Posts</h1>;
+  const { name } = useContext(AppContext);
+
+  return <h1 className="title">Latest Posts: {name}</h1>;
 };
 
 export default Home;

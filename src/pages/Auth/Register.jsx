@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../../Context/AppContext';
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { setToken } = useContext(AppContext);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,12 +27,9 @@ const Register = () => {
     if (data.errors) {
       setErrors(data.errors);
     } else {
-      setFormData({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
-      });
+      localStorage.setItem('token', data.token);
+      setToken(data);
+      navigate('/');
     }
   };
 
@@ -37,7 +38,12 @@ const Register = () => {
       <h1 className="title"> Register </h1>
       <form onSubmit={handleRegister} className="w-1/2 mx-auto space-y-6">
         <div>
-          <input type="text" placeholder="Name" value={formData.name} />
+          <input
+            type="text"
+            placeholder="Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
           {errors.name && <p className="error">{errors.name[0]}</p>}
         </div>
         <div>
