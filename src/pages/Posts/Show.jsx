@@ -1,0 +1,53 @@
+import { useState, useEffect, useContext } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { AppContext } from '../../Context/AppContext';
+
+export default function Show() {
+  const { id } = useParams();
+  const { user } = useContext(AppContext);
+
+  const [post, setPost] = useState({});
+
+  const getPost = async () => {
+    const res = await fetch(`/api/posts/${id}`);
+    const data = await res.json();
+
+    if (res.ok) {
+      setPost(data);
+    }
+  };
+
+  useEffect(() => {
+    getPost();
+  }, [id]);
+
+  return (
+    <>
+      {post && post.id ? (
+        <div
+          className="my-6 p-4 border rounded-md border-dashed border-slate-400"
+          key={post.id}
+        >
+          <div className="mb-2 flex items-start justify-between">
+            <div>
+              <h2>{post.title}</h2>
+            </div>
+          </div>
+          <p>{post.body}</p>
+          {user.id === post.user_id && (
+            <div className="flex items-center justify-end gap-4">
+              <Link
+                to={`/posts/update/${post.id}`}
+                className="bg-green-500 text-white text-sm rounded-lg px-3 py-1"
+              >
+                Update
+              </Link>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p>No such post</p>
+      )}
+    </>
+  );
+}
