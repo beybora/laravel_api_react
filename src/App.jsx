@@ -7,6 +7,7 @@ import { useContext } from 'react';
 import { AppContext } from './Context/AppContext';
 import Create from './pages/Posts/Create';
 import Show from './pages/Posts/Show';
+import Update from './pages/Posts/Update';
 
 function App() {
   const { user } = useContext(AppContext);
@@ -20,6 +21,11 @@ function App() {
           <Route path="/create" element={user ? <Create /> : <Login />} />
 
           <Route path="/posts/:id" element={<Show />} />
+
+          <Route
+            path="/posts/update/:id"
+            element={user ? <Update /> : <Login />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

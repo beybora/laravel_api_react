@@ -1,10 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AppContext } from '../../Context/AppContext';
 
 export default function Show() {
   const { id } = useParams();
-  const { user } = useContext(AppContext);
+  const { user, token } = useContext(AppContext);
+  const navigate = useNavigate();
 
   const [post, setPost] = useState({});
 
@@ -14,6 +15,26 @@ export default function Show() {
 
     if (res.ok) {
       setPost(data);
+    }
+  };
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+
+    if (!user || user.id !== post.user_id) {
+      navigate('/');
+      return;
+    }
+
+    const res = await fetch(`/api/posts/${id}`, {
+      method: 'delete',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      navigate('/');
     }
   };
 
@@ -34,7 +55,7 @@ export default function Show() {
             </div>
           </div>
           <p>{post.body}</p>
-          {user.id === post.user_id && (
+          {user?.id === post?.user_id && (
             <div className="flex items-center justify-end gap-4">
               <Link
                 to={`/posts/update/${post.id}`}
@@ -42,6 +63,14 @@ export default function Show() {
               >
                 Update
               </Link>
+              <form onSubmit={handleDelete}>
+                <button
+                  className="bg-red-500 text-white text-sm rounded-lg px-3 py-1"
+                  type="submit"
+                >
+                  Delete
+                </button>
+              </form>
             </div>
           )}
         </div>
