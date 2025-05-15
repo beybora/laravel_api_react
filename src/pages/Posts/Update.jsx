@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AppContext } from '../../Context/AppContext';
 
 const Update = () => {
-  const { token } = useContext(AppContext);
+  const { token, user } = useContext(AppContext);
   const navigate = useNavigate();
   const { id } = useParams();
   const [errors, setErrors] = useState({});
@@ -17,6 +17,10 @@ const Update = () => {
     const data = await res.json();
 
     if (res.ok) {
+      if (data.user_id !== user.id) {
+        navigate('/');
+      }
+
       setFormData({
         title: data.title,
         body: data.body,
